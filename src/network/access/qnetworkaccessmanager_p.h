@@ -55,8 +55,11 @@
 #ifndef QT_NO_BEARERMANAGEMENT
 #include "QtNetwork/qnetworkconfigmanager.h"
 #endif
+#include <QtCore/QLoggingCategory>
+
 
 QT_BEGIN_NAMESPACE
+Q_DECLARE_LOGGING_CATEGORY(lcQnam)
 
 class QAuthenticator;
 class QAbstractNetworkCache;

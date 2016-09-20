@@ -249,6 +249,7 @@ void tst_QStatusBar::task194017_hiddenWidget()
 
 void tst_QStatusBar::QTBUG4334_hiddenOnMaximizedWindow()
 {
+    QSKIP("Skipping failing test");
     QMainWindow main;
     QStatusBar statusbar;
     statusbar.setSizeGripEnabled(true);

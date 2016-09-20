@@ -81,6 +81,7 @@ public:
     virtual void setEnabled(bool enabled) = 0;
     virtual void setIconSize(int size) = 0;
     virtual void setNativeContents(WId item) { Q_UNUSED(item); }
+    virtual void setHasExclusiveGroup(bool hasExclusiveGroup) { Q_UNUSED(hasExclusiveGroup); }
 
 Q_SIGNALS:
     void activated();
@@ -141,6 +142,7 @@ public:
     virtual void handleReparent(QWindow *newParentWindow) = 0;
 
     virtual QPlatformMenu *menuForTag(quintptr tag) const = 0;
+    virtual QPlatformMenu *createMenu() const { return nullptr; }
 };
 
 QT_END_NAMESPACE

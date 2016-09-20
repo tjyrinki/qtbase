@@ -972,6 +972,11 @@ bool QOpenGLContext::makeCurrent(QSurface *surface)
 
         d->shareGroup->d_func()->deletePendingResources(this);
 
+        const char *rendererString = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
+        if (rendererString != 0 && qstrncmp(rendererString, "Android Emulator", 16) == 0) {
+            QOpenGLContextPrivate *ctx_d = QOpenGLContextPrivate::get(this);
+            ctx_d->workaround_missingPrecisionQualifiers = true;
+        }
 #ifndef QT_NO_DEBUG
         QOpenGLContextPrivate::toggleMakeCurrentTracker(this, true);
 #endif

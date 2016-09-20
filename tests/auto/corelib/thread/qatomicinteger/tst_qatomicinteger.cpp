@@ -100,8 +100,10 @@
 #  endif
 #endif
 #ifdef Q_ATOMIC_INT64_IS_SUPPORTED
+#if !defined(__i386__)
 #  define TYPE_SUPPORTED_qlonglong  1
 #  define TYPE_SUPPORTED_qulonglong 1
+#endif
 #endif
 
 #ifdef Q_MOC_RUN

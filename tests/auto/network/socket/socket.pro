@@ -1,7 +1,6 @@
 TEMPLATE=subdirs
 SUBDIRS=\
    qhttpsocketengine \
-   qudpsocket \
    qtcpsocket \
    qlocalsocket \
    qtcpserver \

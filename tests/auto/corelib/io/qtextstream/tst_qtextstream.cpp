@@ -849,7 +849,7 @@ void tst_QTextStream::readLineUntilNull()
     QVERIFY(file.open(QFile::ReadOnly));
 
     QTextStream stream(&file);
-    for (int i = 0; i < 15066; ++i) {
+    for (int i = 0; i < 20271; ++i) {
         QString line = stream.readLine();
         QVERIFY(!line.isNull());
         QVERIFY(!line.isNull());
@@ -965,7 +965,7 @@ void tst_QTextStream::lineCount_data()
     QTest::newRow("buffersize+2 line") << QByteArray(16385, '\n') << 16385;
 
     QFile file(m_rfc3261FilePath); file.open(QFile::ReadOnly);
-    QTest::newRow("rfc3261") << file.readAll() << 15067;
+    QTest::newRow("rfc3261") << file.readAll() << 20272;
 }
 
 // ------------------------------------------------------------------------------
@@ -1271,26 +1271,26 @@ void tst_QTextStream::seek()
     QTextStream stream(&file);
     QString tmp;
     stream >> tmp;
-    QCOMPARE(tmp, QString::fromLatin1("Network"));
+    QCOMPARE(tmp, QString::fromLatin1("IN"));
 
     // QTextStream::seek(0) should both clear its internal read/write buffers
     // and seek the device.
     for (int i = 0; i < 4; ++i) {
         stream.seek(12 + i);
         stream >> tmp;
-        QCOMPARE(tmp, QString("Network").mid(i));
+        QCOMPARE(tmp, QString("times,").mid(i));
     }
     for (int i = 0; i < 4; ++i) {
         stream.seek(16 - i);
         stream >> tmp;
-        QCOMPARE(tmp, QString("Network").mid(4 - i));
+        QCOMPARE(tmp, QString("times,").mid(4 - i));
     }
     stream.seek(139181);
     stream >> tmp;
-    QCOMPARE(tmp, QString("information"));
+    QCOMPARE(tmp, QString("th"));
     stream.seek(388683);
     stream >> tmp;
-    QCOMPARE(tmp, QString("telephone"));
+    QCOMPARE(tmp, QString("trong,"));
 
     // Also test this with a string
     QString words = QLatin1String("thisisa");
@@ -1378,14 +1378,14 @@ void tst_QTextStream::pos()
 
         QString strtmp;
         stream >> strtmp;
-        QCOMPARE(strtmp, QString("Network"));
-        QCOMPARE(stream.pos(), qint64(19));
+        QCOMPARE(strtmp, QString("IN"));
+        QCOMPARE(stream.pos(), qint64(2));
 
         stream.seek(2598);
         QCOMPARE(stream.pos(), qint64(2598));
         stream >> strtmp;
-        QCOMPARE(stream.pos(), qint64(2607));
-        QCOMPARE(strtmp, QString("locations"));
+        QCOMPARE(stream.pos(), qint64(2599));
+        QCOMPARE(strtmp, QString(","));
     }
     {
         // Shift-JIS device

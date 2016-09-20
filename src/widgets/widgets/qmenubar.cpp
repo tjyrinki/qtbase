@@ -1011,13 +1011,11 @@ void QMenuBar::paintEvent(QPaintEvent *e)
 */
 void QMenuBar::setVisible(bool visible)
 {
-#if defined(Q_OS_MAC) || defined(Q_OS_WINCE)
     if (isNativeMenuBar()) {
         if (!visible)
             QWidget::setVisible(false);
         return;
     }
-#endif
     QWidget::setVisible(visible);
 }
 
@@ -1204,12 +1202,19 @@ void QMenuBar::leaveEvent(QEvent *)
         d->setCurrentAction(0);
 }
 
-QPlatformMenu *getPlatformMenu(QAction *action)
+QPlatformMenu *QMenuBarPrivate::getPlatformMenu(QAction *action)
 {
     if (!action || !action->menu())
         return 0;
 
-    return action->menu()->platformMenu();
+    QPlatformMenu *platformMenu = action->menu()->platformMenu();
+    if (!platformMenu && platformMenuBar) {
+        platformMenu = platformMenuBar->createMenu();
+        if (platformMenu)
+            action->menu()->setPlatformMenu(platformMenu);
+    }
+
+    return platformMenu;
 }
 
 /*!
@@ -1230,14 +1235,14 @@ void QMenuBar::actionEvent(QActionEvent *e)
             return;
 
         if (e->type() == QEvent::ActionAdded) {
-            QPlatformMenu *menu = getPlatformMenu(e->action());
+            QPlatformMenu *menu = d->getPlatformMenu(e->action());
             if (menu) {
                 QPlatformMenu* beforeMenu = NULL;
                 for (int beforeIndex = d->indexOf(e->action()) + 1;
                      !beforeMenu && (beforeIndex < actions().size());
                      ++beforeIndex)
                 {
-                    beforeMenu = getPlatformMenu(actions().at(beforeIndex));
+                    beforeMenu = d->getPlatformMenu(actions().at(beforeIndex));
                 }
 
                 menu->setTag(reinterpret_cast<quintptr>(e->action()));
@@ -1245,12 +1250,12 @@ void QMenuBar::actionEvent(QActionEvent *e)
                 d->platformMenuBar->insertMenu(menu, beforeMenu);
             }
         } else if (e->type() == QEvent::ActionRemoved) {
-            QPlatformMenu *menu = getPlatformMenu(e->action());
+            QPlatformMenu *menu = d->getPlatformMenu(e->action());
             if (menu)
                 d->platformMenuBar->removeMenu(menu);
         } else if (e->type() == QEvent::ActionChanged) {
             QPlatformMenu* cur = d->platformMenuBar->menuForTag(reinterpret_cast<quintptr>(e->action()));
-            QPlatformMenu *menu = getPlatformMenu(e->action());
+            QPlatformMenu *menu = d->getPlatformMenu(e->action());
 
             // the menu associated with the action can change, need to
             // remove and/or insert the new platform menu
@@ -1265,7 +1270,7 @@ void QMenuBar::actionEvent(QActionEvent *e)
                          !beforeMenu && (beforeIndex < actions().size());
                          ++beforeIndex)
                     {
-                        beforeMenu = getPlatformMenu(actions().at(beforeIndex));
+                        beforeMenu = d->getPlatformMenu(actions().at(beforeIndex));
                     }
                     d->platformMenuBar->insertMenu(menu, beforeMenu);
                 }
@@ -1550,11 +1555,7 @@ QRect QMenuBar::actionGeometry(QAction *act) const
 QSize QMenuBar::minimumSizeHint() const
 {
     Q_D(const QMenuBar);
-#if defined(Q_OS_MAC) || defined(Q_OS_WINCE)
     const bool as_gui_menubar = !isNativeMenuBar();
-#else
-    const bool as_gui_menubar = true;
-#endif
 
     ensurePolished();
     QSize ret(0, 0);
@@ -1606,12 +1607,7 @@ QSize QMenuBar::minimumSizeHint() const
 QSize QMenuBar::sizeHint() const
 {
     Q_D(const QMenuBar);
-#if defined(Q_OS_MAC) || defined(Q_OS_WINCE)
     const bool as_gui_menubar = !isNativeMenuBar();
-#else
-    const bool as_gui_menubar = true;
-#endif
-
 
     ensurePolished();
     QSize ret(0, 0);
@@ -1664,11 +1660,7 @@ QSize QMenuBar::sizeHint() const
 int QMenuBar::heightForWidth(int) const
 {
     Q_D(const QMenuBar);
-#if defined(Q_OS_MAC) || defined(Q_OS_WINCE)
     const bool as_gui_menubar = !isNativeMenuBar();
-#else
-    const bool as_gui_menubar = true;
-#endif
 
     const_cast<QMenuBarPrivate*>(d)->updateGeometries();
     int height = 0;
@@ -1813,10 +1805,8 @@ QWidget *QMenuBar::cornerWidget(Qt::Corner corner) const
 void QMenuBar::setNativeMenuBar(bool nativeMenuBar)
 {
     Q_D(QMenuBar);
-    if (d->nativeMenuBar == -1 || (nativeMenuBar != bool(d->nativeMenuBar))) {
-        d->nativeMenuBar = nativeMenuBar;
-
-        if (!d->nativeMenuBar) {
+    if (nativeMenuBar != bool(d->platformMenuBar)) {
+        if (!nativeMenuBar) {
             delete d->platformMenuBar;
             d->platformMenuBar = 0;
         } else {
@@ -1825,7 +1815,7 @@ void QMenuBar::setNativeMenuBar(bool nativeMenuBar)
         }
 
         updateGeometry();
-        if (!d->nativeMenuBar && parentWidget())
+        if (!nativeMenuBar && parentWidget())
             setVisible(true);
     }
 }
@@ -1833,10 +1823,7 @@ void QMenuBar::setNativeMenuBar(bool nativeMenuBar)
 bool QMenuBar::isNativeMenuBar() const
 {
     Q_D(const QMenuBar);
-    if (d->nativeMenuBar == -1) {
-        return !QApplication::instance()->testAttribute(Qt::AA_DontUseNativeMenuBar);
-    }
-    return d->nativeMenuBar;
+    return bool(d->platformMenuBar);
 }
 
 /*!

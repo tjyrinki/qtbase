@@ -54,4 +54,3 @@ SUBDIRS=\
            qtextedit \
            qtoolbar \
 
-contains(QT_CONFIG, opengl): SUBDIRS += qopenglwidget

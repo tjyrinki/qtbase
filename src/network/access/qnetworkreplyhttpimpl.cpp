@@ -1710,6 +1710,11 @@ bool QNetworkReplyHttpImplPrivate::start(const QNetworkRequest &newHttpRequest)
         Q_Q(QNetworkReplyHttpImpl);
         QObject::connect(networkSession.data(), SIGNAL(usagePoliciesChanged(QNetworkSession::UsagePolicies)),
                             q, SLOT(_q_networkSessionUsagePoliciesChanged(QNetworkSession::UsagePolicies)));
+            QObject::connect(networkSession.data(), SIGNAL(error(QNetworkSession::SessionError)),
+                             q, SLOT(_q_networkSessionFailed()), Qt::QueuedConnection);
+            QObject::connect(networkSession.data(), SIGNAL(stateChanged(QNetworkSession::State)),
+                             q, SLOT(_q_networkSessionStateChanged(QNetworkSession::State)), Qt::QueuedConnection);
+
         postRequest(newHttpRequest);
         return true;
     } else if (synchronous) {
@@ -1758,7 +1763,7 @@ void QNetworkReplyHttpImplPrivate::_q_startOperation()
                              q, SLOT(_q_networkSessionFailed()), Qt::QueuedConnection);
 
             if (!session->isOpen()) {
-                session->setSessionProperty(QStringLiteral("ConnectInBackground"), isBackground);
+               session->setSessionProperty(QStringLiteral("ConnectInBackground"), isBackground);
                 session->open();
             }
         } else {
@@ -1919,6 +1924,7 @@ void QNetworkReplyHttpImplPrivate::_q_bufferOutgoingData()
 #ifndef QT_NO_BEARERMANAGEMENT
 void QNetworkReplyHttpImplPrivate::_q_networkSessionConnected()
 {
+
     Q_Q(QNetworkReplyHttpImpl);
 
     if (!manager)
@@ -1949,7 +1955,8 @@ void QNetworkReplyHttpImplPrivate::_q_networkSessionConnected()
 
 void QNetworkReplyHttpImplPrivate::_q_networkSessionStateChanged(QNetworkSession::State sessionState)
 {
-    if (sessionState == QNetworkSession::Disconnected
+    if ((sessionState == QNetworkSession::Disconnected ||
+         sessionState == QNetworkSession::NotAvailable)
         && state != Idle && state != Reconnecting) {
         error(QNetworkReplyImpl::NetworkSessionFailedError,
               QCoreApplication::translate("QNetworkReply", "Network session error."));

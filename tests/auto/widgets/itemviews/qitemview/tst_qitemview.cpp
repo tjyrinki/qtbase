@@ -473,6 +473,7 @@ void touch(QWidget *widget, Qt::KeyboardModifier modifier, Qt::Key keyPress){
   */
 void tst_QItemView::spider()
 {
+    QSKIP("Skipped for now");
     QFETCH(QString, viewType);
     QFETCH(int, vscroll);
     QFETCH(int, hscroll);

@@ -104,8 +104,7 @@ tst_qmake::~tst_qmake()
 
 void tst_qmake::initTestCase()
 {
-    QString binpath = QLibraryInfo::location(QLibraryInfo::BinariesPath);
-    QString cmd = QString("%1/qmake").arg(binpath);
+    QString cmd = QString("qmake");
 #ifdef Q_CC_MSVC
     const QString jom = QStandardPaths::findExecutable(QLatin1String("jom.exe"));
     if (jom.isEmpty()) {

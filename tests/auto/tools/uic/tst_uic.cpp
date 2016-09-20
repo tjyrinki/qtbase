@@ -72,7 +72,7 @@ private:
 };
 
 tst_uic::tst_uic()
-    : m_command(QLibraryInfo::location(QLibraryInfo::BinariesPath) + QLatin1String("/uic"))
+    : m_command(QLatin1String("uic"))
     , m_versionRegexp(QLatin1String("Created by: Qt User Interface Compiler version [.\\d]{5,5}"))
 {
 }

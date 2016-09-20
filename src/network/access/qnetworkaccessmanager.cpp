@@ -69,6 +69,8 @@
 
 QT_BEGIN_NAMESPACE
 
+Q_LOGGING_CATEGORY(lcQnam, "qt.network.qnam")
+
 Q_GLOBAL_STATIC(QNetworkAccessFileBackendFactory, fileBackend)
 #ifndef QT_NO_FTP
 Q_GLOBAL_STATIC(QNetworkAccessFtpBackendFactory, ftpBackend)

@@ -320,6 +320,7 @@ void tst_QSaveFile::transactionalWriteErrorRenaming()
     QCOMPARE(file.write("Hello"), qint64(5));
     QVERIFY(!QFile::exists(targetFile));
 #ifdef Q_OS_UNIX
+    if (getuid()==0) QSKIP("Cannot run this test as root");
     // Make rename() fail for lack of permissions in the directory
     QFile dirAsFile(dir.path()); // yay, I have to use QFile to change a dir's permissions...
     QVERIFY(dirAsFile.setPermissions(QFile::Permissions(0))); // no permissions

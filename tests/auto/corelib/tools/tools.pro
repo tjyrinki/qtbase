@@ -1,6 +1,6 @@
 TEMPLATE=subdirs
 SUBDIRS=\
-    collections \
+    #LP: #1603991 collections \
     qalgorithms \
     qarraydata \
     qarraydata_strictiterators \

@@ -116,6 +116,8 @@ void tst_QNetworkConfiguration::comparison()
     //test case must run on machine that has valid connection points
     QNetworkConfigurationManager manager;
     QList<QNetworkConfiguration> preScanConfigs = manager.allConfigurations();
+    if (preScanConfigs.count() < 1)
+        QSKIP("No suitable configurations, skipping this comparison test.");
 
     QSignalSpy spy(&manager, SIGNAL(updateCompleted()));
     manager.updateConfigurations(); //initiate scans

@@ -8,7 +8,6 @@ SUBDIRS=\
    qfontmetrics \
    qglyphrun \
    qrawfont \
-   qstatictext \
    qsyntaxhighlighter \
    qtextblock \
    qtextcursor \

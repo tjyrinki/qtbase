@@ -190,6 +190,7 @@ QAction *QActionGroup::addAction(QAction* a)
         if (oldGroup)
             oldGroup->removeAction(a);
         a->d_func()->group = this;
+        a->d_func()->sendDataChanged();
     }
     return a;
 }

@@ -92,6 +92,7 @@ Q_GLOBAL_STATIC(QGtkStyleUpdateScheduler, styleScheduler)
 
 Ptr_gtk_container_forall QGtkStylePrivate::gtk_container_forall = 0;
 Ptr_gtk_init QGtkStylePrivate::gtk_init = 0;
+Ptr_ubuntu_gtk_set_use_overlay_scrollbar QGtkStylePrivate::ubuntu_gtk_set_use_overlay_scrollbar = 0;
 Ptr_gtk_style_attach QGtkStylePrivate::gtk_style_attach = 0;
 Ptr_gtk_window_new QGtkStylePrivate::gtk_window_new = 0;
 Ptr_gtk_widget_destroy QGtkStylePrivate::gtk_widget_destroy = 0;
@@ -331,6 +332,7 @@ void QGtkStylePrivate::resolveGtk() const
     QLibrary libgtk(QLS("gtk-x11-2.0"), 0, 0);
 
     gtk_init = (Ptr_gtk_init)libgtk.resolve("gtk_init");
+    ubuntu_gtk_set_use_overlay_scrollbar = (Ptr_ubuntu_gtk_set_use_overlay_scrollbar)libgtk.resolve("ubuntu_gtk_set_use_overlay_scrollbar");
     gtk_window_new = (Ptr_gtk_window_new)libgtk.resolve("gtk_window_new");
     gtk_style_attach = (Ptr_gtk_style_attach)libgtk.resolve("gtk_style_attach");
     gtk_widget_destroy = (Ptr_gtk_widget_destroy)libgtk.resolve("gtk_widget_destroy");
@@ -503,6 +505,8 @@ void QGtkStylePrivate::initGtkWidgets() const
         QGtkStylePrivate::gtk_init (NULL, NULL);
 #ifndef Q_OS_MAC
         XSetErrorHandler(qt_x_errhandler);
+        if (QGtkStylePrivate::ubuntu_gtk_set_use_overlay_scrollbar)
+            QGtkStylePrivate::ubuntu_gtk_set_use_overlay_scrollbar(false);
 #endif
 
         // make a window

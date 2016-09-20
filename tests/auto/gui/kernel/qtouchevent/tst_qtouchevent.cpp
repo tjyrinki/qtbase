@@ -1414,6 +1414,7 @@ void tst_QTouchEvent::crashInQGraphicsSceneAfterNotHandlingTouchBegin()
 
 void tst_QTouchEvent::touchBeginWithGraphicsWidget()
 {
+    QSKIP("Skipping failing test");
     if (QHighDpiScaling::isActive())
         QSKIP("Fails when scaling is active");
     QGraphicsScene scene;

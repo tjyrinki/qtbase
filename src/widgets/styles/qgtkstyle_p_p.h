@@ -121,6 +121,7 @@ typedef char* (*Ptr_gconf_client_get_string)(GConfClient*, const char*, GError *
 typedef bool (*Ptr_gconf_client_get_bool)(GConfClient*, const char*, GError **);
 
 typedef void (*Ptr_gtk_init)(int *, char ***);
+typedef void (*Ptr_ubuntu_gtk_set_use_overlay_scrollbar) (gboolean);
 typedef GtkWidget* (*Ptr_gtk_window_new) (GtkWindowType);
 typedef GtkStyle* (*Ptr_gtk_style_attach)(GtkStyle *, GdkWindow *);
 typedef void (*Ptr_gtk_widget_destroy) (GtkWidget *);
@@ -289,6 +290,7 @@ public:
 
     static Ptr_gtk_container_forall gtk_container_forall;
     static Ptr_gtk_init gtk_init;
+    static Ptr_ubuntu_gtk_set_use_overlay_scrollbar ubuntu_gtk_set_use_overlay_scrollbar;
     static Ptr_gtk_style_attach gtk_style_attach;
     static Ptr_gtk_window_new gtk_window_new;
     static Ptr_gtk_widget_destroy gtk_widget_destroy;

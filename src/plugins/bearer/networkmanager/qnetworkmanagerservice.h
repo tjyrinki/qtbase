@@ -79,6 +79,8 @@ typedef enum
     NM_DEVICE_STATE_CONFIG = 50,
     NM_DEVICE_STATE_NEED_AUTH = 60,
     NM_DEVICE_STATE_IP_CONFIG = 70,
+    NM_DEVICE_STATE_IP_CHECK = 80,
+    NM_DEVICE_STATE_SECONDARIES = 90,
     NM_DEVICE_STATE_ACTIVATED = 100,
     NM_DEVICE_STATE_DEACTIVATING = 110,
     NM_DEVICE_STATE_FAILED = 120
@@ -89,6 +91,7 @@ typedef enum
     NM_ACTIVE_CONNECTION_STATE_UNKNOWN = 0,
     NM_ACTIVE_CONNECTION_STATE_ACTIVATING,
     NM_ACTIVE_CONNECTION_STATE_ACTIVATED,
+    NM_ACTIVE_CONNECTION_STATE_DEACTIVATING,
     NM_ACTIVE_CONNECTION_STATE_DEACTIVATED = 4
 } NMActiveConnectionState;
 
@@ -261,11 +264,12 @@ public:
     quint32 ip4Address() const;
     quint32 state() const;
     quint32 deviceType() const;
+    QStringList availableConnections() const;
 
     QDBusObjectPath ip4config() const;
 
 Q_SIGNALS:
-    void stateChanged(const QString &, quint32);
+    void stateChanged(quint32);
     void propertiesChanged(QMap<QString,QVariant>);
     void connectionsChanged(QStringList);
     void propertiesReady();
@@ -273,6 +277,7 @@ private Q_SLOTS:
     void propertiesSwap(QMap<QString,QVariant>);
 private:
     QVariantMap propertyMap;
+    QStringList availableConnectionPaths;
 };
 
 class QNetworkManagerInterfaceDeviceWired : public QDBusAbstractInterface
@@ -322,7 +327,6 @@ public:
                                                     QObject *parent = 0);
     ~QNetworkManagerInterfaceDeviceWireless();
 
-    QDBusObjectPath path() const;
     QList <QDBusObjectPath> getAccessPoints();
 
     QString hwAddress() const;
@@ -335,20 +339,10 @@ public:
     void requestScan();
 Q_SIGNALS:
     void propertiesChanged(QMap<QString,QVariant>);
-    void accessPointAdded(const QString &);
-    void accessPointRemoved(const QString &);
-    void scanDone();
     void propertiesReady();
-    void accessPointsReady();
 
 private Q_SLOTS:
-    void scanIsDone();
     void propertiesSwap(QMap<QString,QVariant>);
-
-    void slotAccessPointAdded(QDBusObjectPath);
-    void slotAccessPointRemoved(QDBusObjectPath);
-
-    void accessPointsFinished(QDBusPendingCallWatcher *watcher);
 
 private:
     QVariantMap propertyMap;
@@ -465,6 +459,7 @@ public:
     quint32 state() const;
     bool defaultRoute() const;
     bool default6Route() const;
+    QString type() const;
 
 
 Q_SIGNALS:

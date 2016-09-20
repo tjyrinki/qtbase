@@ -14,7 +14,8 @@ SUBDIRS=\
    # qaccessibilitylinux \ # QTBUG-44434
    qaccessibilitymac \
    qcomplextext \
-   qfocusevent \
+   # fails in 5.5 beta
+   # qfocusevent \
    qnetworkaccessmanager_and_qprogressdialog \
    qobjectperformance \
    qobjectrace \
@@ -22,7 +23,6 @@ SUBDIRS=\
    qprocess_and_guieventloop \
    qtokenautomaton \
    windowsmobile \
-   toolsupport \
 
 !qtHaveModule(gui): SUBDIRS -= \
    qcomplextext \

@@ -53,6 +53,7 @@ QDBusPlatformMenuItem::QDBusPlatformMenuItem(quintptr tag)
     , m_isCheckable(false)
     , m_isChecked(false)
     , m_dbusID(nextDBusID++)
+    , m_hasExclusiveGroup(false)
 {
     menuItemsByID.insert(m_dbusID, this);
 }
@@ -60,6 +61,8 @@ QDBusPlatformMenuItem::QDBusPlatformMenuItem(quintptr tag)
 QDBusPlatformMenuItem::~QDBusPlatformMenuItem()
 {
     menuItemsByID.remove(m_dbusID);
+    if (m_subMenu)
+        static_cast<QDBusPlatformMenu *>(m_subMenu)->setContainingMenuItem(Q_NULLPTR);
 }
 
 void QDBusPlatformMenuItem::setTag(quintptr tag)
@@ -120,6 +123,11 @@ void QDBusPlatformMenuItem::setChecked(bool isChecked)
     m_isChecked = isChecked;
 }
 
+void QDBusPlatformMenuItem::setHasExclusiveGroup(bool hasExclusiveGroup)
+{
+    m_hasExclusiveGroup = hasExclusiveGroup;
+}
+
 void QDBusPlatformMenuItem::setShortcut(const QKeySequence &shortcut)
 {
     m_shortcut = shortcut;
@@ -162,6 +170,8 @@ QDBusPlatformMenu::QDBusPlatformMenu(quintptr tag)
 
 QDBusPlatformMenu::~QDBusPlatformMenu()
 {
+    if (m_containingMenuItem)
+        m_containingMenuItem->setMenu(Q_NULLPTR);
 }
 
 void QDBusPlatformMenu::insertMenuItem(QPlatformMenuItem *menuItem, QPlatformMenuItem *before)

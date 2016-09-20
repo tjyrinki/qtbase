@@ -240,6 +240,7 @@ template <typename T> struct TypeInStruct { T type; };
 
 void tst_QAtomicInt::alignment()
 {
+#if !defined(__i386__)
 #ifdef Q_ALIGNOF
     // this will cause a build error if the alignment isn't the same
     char dummy1[Q_ALIGNOF(QBasicAtomicInt) == Q_ALIGNOF(TypeInStruct<int>) ? 1 : -1];
@@ -262,6 +263,7 @@ void tst_QAtomicInt::alignment()
     QCOMPARE(Q_ALIGNOF(QBasicAtomicInteger<qlonglong>), Q_ALIGNOF(TypeInStruct<qlonglong>));
 #endif
 
+#endif
 #endif
 }
 

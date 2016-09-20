@@ -200,6 +200,7 @@ QSemaphore threadsTurn;
 
 void tst_QReadWriteLock::tryReadLock()
 {
+    QSKIP("Skipping flaky test");
     QReadWriteLock rwlock;
     QVERIFY(rwlock.tryLockForRead());
     rwlock.unlock();

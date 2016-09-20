@@ -1141,6 +1141,10 @@ void tst_QSpinBox::positiveSign()
     spinBox.setRange(-20, 20);
     spinBox.setValue(-20);
     spinBox.show();
+    spinBox.activateWindow();
+    spinBox.setFocus();
+    QApplication::setActiveWindow(&spinBox);
+
     QVERIFY(QTest::qWaitForWindowActive(&spinBox));
 
     QTest::keyClick(&spinBox, Qt::Key_End, Qt::ShiftModifier);

@@ -485,6 +485,9 @@ void tst_QNetworkSession::sessionOpenCloseStop_data()
     QTest::addColumn<QNetworkConfiguration>("configuration");
     QTest::addColumn<bool>("forceSessionStop");
 
+    if (manager.allConfigurations().count() < 1)
+        QSKIP("No suitable configurations, skipping this test.");
+
     foreach (const QNetworkConfiguration &config, manager.allConfigurations()) {
         const QString name = config.name().isEmpty() ? QString("<Hidden>") : config.name();
         QTest::newRow((name + QLatin1String(" close")).toLocal8Bit().constData())
@@ -914,6 +917,8 @@ void tst_QNetworkSession::outOfProcessSession()
     // regardless of process boundaries. The interprocess communication is more like a way to get
     // this test-case act correctly and timely.
     QList<QNetworkConfiguration> before = manager.allConfigurations(QNetworkConfiguration::Active);
+    if (before.count() < 1)
+        QSKIP("No suitable configurations, skipping this test.");
     QSignalSpy spy(&manager, SIGNAL(configurationChanged(QNetworkConfiguration)));
 
     // Cannot read/write to processes on WinCE.
@@ -1273,6 +1278,9 @@ void tst_QNetworkSession::sessionAutoClose()
 
 void tst_QNetworkSession::usagePolicies()
 {
+    if (!manager.defaultConfiguration().isValid())
+        QSKIP("No suitable configurations, skipping this test.");
+
     QNetworkSession session(manager.defaultConfiguration());
     QNetworkSession::UsagePolicies initial;
     initial = session.usagePolicies();

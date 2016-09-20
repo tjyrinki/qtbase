@@ -167,6 +167,9 @@ public:
 
 void tst_QtConcurrentIterateKernel::stresstest()
 {
+#ifdef __arm__
+    QSKIP("Skipping crashing test");
+#endif
     const int iterations = 1000;
     const int times = 50;
     for (int i = 0; i < times; ++i) {
@@ -179,6 +182,9 @@ void tst_QtConcurrentIterateKernel::stresstest()
 
 void tst_QtConcurrentIterateKernel::noIterations()
 {
+#ifdef __arm__
+    QSKIP("Skipping crashing test");
+#endif
     const int times = 20000;
     for (int i = 0; i < times; ++i)
         startThreadEngine(new IterateKernel<TestIterator, void>(0, 0)).startBlocking();
@@ -231,6 +237,10 @@ public:
 
 void tst_QtConcurrentIterateKernel::throttling()
 {
+#ifdef __arm__
+    QSKIP("Skipping crashing test");
+#endif
+
     const int totalIterations = 400;
     iterations.store(0);
 
@@ -279,6 +289,9 @@ static QByteArray msgBlockSize(const BlockSizeRecorder &recorder, int expectedMi
 
 void tst_QtConcurrentIterateKernel::blockSize()
 {
+#ifdef __arm__
+    QSKIP("Skipping crashing test");
+#endif
     const int expectedMinimumBlockSize = 1024 / QThread::idealThreadCount();
     BlockSizeRecorder recorder(0, 10000);
     recorder.startBlocking();

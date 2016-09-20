@@ -43,7 +43,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <unistd.h> // for unlink()
+#include <unistd.h> // for unlink() and getuid()
 #endif
 
 Q_DECLARE_METATYPE(QLocalSocket::LocalSocketError)
@@ -1292,6 +1292,8 @@ void tst_QLocalSocket::verifySocketOptions()
 {
     // These are only guaranteed to be useful on linux at this time
 #ifdef Q_OS_LINUX
+   if (getuid()==0) QSKIP("Cannot run this test as root");
+
    QFETCH(QString, service);
    QFETCH(QLocalServer::SocketOption, opts);
    QFETCH(QFile::Permissions, perms);

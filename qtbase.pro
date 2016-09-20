@@ -2,6 +2,7 @@
 # Main projectfile
 #####################################################################
 
+QT_BUILD_PARTS+=tests
 load(qt_parts)
 
 SUBDIRS += qmake/qmake-docs.pro

@@ -26,7 +26,6 @@ SUBDIRS=\
     qsettings \
     qsavefile \
     qstandardpaths \
-    qstorageinfo \
     qtemporarydir \
     qtemporaryfile \
     qtextstream \
